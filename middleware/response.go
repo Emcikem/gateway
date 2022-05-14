@@ -24,8 +24,8 @@ const (
 )
 
 type Response struct {
-	ErrorCode ResponseCode `json:"errno"`
-	ErrorMsg  string       `json:"errmsg"`
+	ErrorCode ResponseCode `json:"code"`
+	ErrorMsg  string       `json:"msg"`
 	Data      interface{}  `json:"data"`
 	TraceId   interface{}  `json:"trace_id"`
 	Stack     interface{}  `json:"stack"`

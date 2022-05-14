@@ -67,10 +67,6 @@ const docTemplate_swagger = `{
     "definitions": {
         "dto.AdminLoginInput": {
             "type": "object",
-            "required": [
-                "password",
-                "username"
-            ],
             "properties": {
                 "password": {
                     "description": "密码",
@@ -97,12 +93,12 @@ const docTemplate_swagger = `{
         "middleware.Response": {
             "type": "object",
             "properties": {
-                "data": {},
-                "errmsg": {
-                    "type": "string"
-                },
-                "errno": {
+                "code": {
                     "type": "integer"
+                },
+                "data": {},
+                "msg": {
+                    "type": "string"
                 },
                 "stack": {},
                 "trace_id": {}

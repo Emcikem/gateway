@@ -9,9 +9,6 @@ definitions:
         description: 管理员用户名
         example: admin
         type: string
-    required:
-    - password
-    - username
     type: object
   dto.AdminLoginOutput:
     properties:
@@ -22,11 +19,11 @@ definitions:
     type: object
   middleware.Response:
     properties:
-      data: {}
-      errmsg:
-        type: string
-      errno:
+      code:
         type: integer
+      data: {}
+      msg:
+        type: string
       stack: {}
       trace_id: {}
     type: object
