@@ -13,3 +13,12 @@ func GenSaltPassword(salt, password string) string {
 	s2.Write([]byte(salt + str1))
 	return fmt.Sprintf("%x", s2.Sum(nil))
 }
+
+func InStringSlice(slice []string, str string) bool {
+	for _, item := range slice {
+		if str == item {
+			return true
+		}
+	}
+	return false
+}
