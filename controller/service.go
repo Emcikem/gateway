@@ -14,6 +14,7 @@ type ServiceController struct {
 func ServiceRegister(group *gin.RouterGroup) {
 	service := &ServiceController{}
 	group.GET("/service_list", service.ServiceList)
+	group.GET("/detail", service.ServiceDetail)
 }
 
 // ServiceList godoc
@@ -42,7 +43,7 @@ func (service *ServiceController) ServiceList(c *gin.Context) {
 
 	//从db中分页读取基本信息
 	serviceInfo := &dao.ServiceInfo{}
-	list, total, err := serviceInfo.PageList(c, tx, params)
+	list, total, err := serviceInfo.PageList(tx, params)
 	if err != nil {
 		middleware.ResponseError(c, 2002, err)
 		return
@@ -67,4 +68,34 @@ func (service *ServiceController) ServiceList(c *gin.Context) {
 		List:  outList,
 	}
 	middleware.ResponseSuccess(c, out)
+}
+
+// ServiceDetail godoc
+// @Summary 服务详情
+// @Description 服务详情
+// @Tags 服务管理
+// @ID /service/detail
+// @Accept  json
+// @Produce  json
+// @Param id query int true "id"
+// @Success 200 {object} middleware.Response{data=dao.ServiceDetail} "success"
+// @Router /service/detail [get]
+func (service *ServiceController) ServiceDetail(c *gin.Context) {
+	params := &dto.ServiceDetailInput{}
+	if err := params.BindValidParam(c); err != nil {
+		middleware.ResponseError(c, 2000, err)
+		return
+	}
+	tx, err := lib.GetGormPool("default")
+	if err != nil {
+		middleware.ResponseError(c, 2001, err)
+		return
+	}
+	serviceDetail := &dao.ServiceDetail{}
+	detail, err := serviceDetail.QueryById(tx, params.Id)
+	if err != nil {
+		middleware.ResponseError(c, 2002, err)
+		return
+	}
+	middleware.ResponseSuccess(c, detail)
 }

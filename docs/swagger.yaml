@@ -1,4 +1,37 @@
 definitions:
+  dao.ServiceDetail:
+    properties:
+      black_ip_list:
+        type: string
+      create_at:
+        type: string
+      id:
+        type: integer
+      ip_list:
+        type: string
+      is_delete:
+        type: integer
+      load_type:
+        type: integer
+      remote_params:
+        type: string
+      round_type:
+        type: integer
+      service_addr:
+        type: string
+      service_desc:
+        type: string
+      service_name:
+        type: string
+      total_node:
+        type: integer
+      update_at:
+        type: string
+      weight_list:
+        type: string
+      white_ip_list:
+        type: string
+    type: object
   dto.AdminInfoOutput:
     properties:
       avatar:
@@ -192,6 +225,33 @@ paths:
       summary: 管理员退出
       tags:
       - 管理员接口
+  /service/detail:
+    get:
+      consumes:
+      - application/json
+      description: 服务详情
+      operationId: /service/detail
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/middleware.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dao.ServiceDetail'
+              type: object
+      summary: 服务详情
+      tags:
+      - 服务管理
   /service/service_list:
     get:
       consumes:

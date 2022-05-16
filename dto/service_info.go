@@ -30,3 +30,11 @@ type ServiceListOutput struct {
 	Total int64                   `json:"total" form:"total" comment:"总数"` //总数
 	List  []ServiceListItemOutput `json:"list" form:"list" comment:"列表"`   //列表
 }
+
+type ServiceDetailInput struct {
+	Id int `json:"id" form:"id" comment:"服务Id" example:"1"`
+}
+
+func (param *ServiceDetailInput) BindValidParam(c *gin.Context) error {
+	return public.DefaultGetValidParams(c, param)
+}
