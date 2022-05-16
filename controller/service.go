@@ -42,17 +42,29 @@ func (service *ServiceController) ServiceList(c *gin.Context) {
 
 	//从db中分页读取基本信息
 	serviceInfo := &dao.ServiceInfo{}
-	_, total, err := serviceInfo.PageList(c, tx, params)
+	list, total, err := serviceInfo.PageList(c, tx, params)
 	if err != nil {
 		middleware.ResponseError(c, 2002, err)
 		return
 	}
 
 	//格式化输出信息
+	outList := []dto.ServiceListItemOutput{}
+	for _, listItem := range list {
+		outItem := dto.ServiceListItemOutput{
+			ID:          listItem.ID,
+			ServiceName: listItem.ServiceName,
+			ServiceDesc: listItem.ServiceDesc,
+			LoadType:    listItem.LoadType,
+			ServiceAddr: listItem.ServiceAddr,
+			TotalNode:   listItem.TotalNode,
+		}
+		outList = append(outList, outItem)
+	}
 
 	out := &dto.ServiceListOutput{
 		Total: total,
-		List:  nil,
+		List:  outList,
 	}
 	middleware.ResponseSuccess(c, out)
 }
