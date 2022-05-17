@@ -17,6 +17,7 @@ type AdminLoginController struct{}
 func AdminLoginRegister(group *gin.RouterGroup) {
 	adminLogin := &AdminLoginController{}
 	group.POST("/login", adminLogin.AdminLogin)
+	group.GET("/logout", adminLogin.AdminLoginOut)
 }
 
 // AdminLogin godoc
@@ -56,6 +57,7 @@ func (adminlogin *AdminLoginController) AdminLogin(c *gin.Context) {
 		ID:        admin.Id,
 		UserName:  admin.UserName,
 		LoginTime: time.Now(),
+		Avatar:    admin.Avatar,
 	}
 	sessBts, err := json.Marshal(sessInfo)
 	if err != nil {
