@@ -1,21 +1,15 @@
 package main
 
 import (
-	"gateway/router"
-	"github.com/e421083458/golang_common/lib"
-	"os"
-	"os/signal"
-	"syscall"
+	"singo/conf"
+	"singo/server"
 )
 
 func main() {
-	lib.InitModule("./conf/dev/", []string{"base", "mysql", "redis"})
-	defer lib.Destroy()
-	router.HttpServerRun()
+	// 从配置文件读取配置
+	conf.Init()
 
-	quit := make(chan os.Signal)
-	signal.Notify(quit, syscall.SIGKILL, syscall.SIGQUIT, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
-
-	router.HttpServerStop()
+	// 装载路由
+	r := server.NewRouter()
+	r.Run(":8880")
 }

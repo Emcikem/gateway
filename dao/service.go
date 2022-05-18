@@ -1,73 +1,56 @@
 package dao
 
 import (
-	"gateway/dto"
 	"gorm.io/gorm"
 	"time"
 )
 
-type ServiceInfo struct {
-	ID          int64     `json:"id" gorm:"primary_key"`
-	LoadType    int       `json:"load_type" gorm:"column:load_type" description:"负载类型 0=http 1=tcp 2=grpc"`
-	ServiceName string    `json:"service_name" gorm:"column:service_name" description:"服务名称"`
-	ServiceDesc string    `json:"service_desc" gorm:"column:service_desc" description:"服务描述"`
-	ServiceAddr string    `json:"service_addr" gorm:"column:service_addr" description:"服务地址"`
-	TotalNode   int       `json:"total_node" gorm:"column:total_node" description:"结点数"`
-	UpdatedAt   time.Time `json:"create_at" gorm:"column:create_at" description:"更新时间"`
-	CreatedAt   time.Time `json:"update_at" gorm:"column:update_at" description:"添加时间"`
-	IsDelete    int8      `json:"is_delete" gorm:"column:is_delete" description:"是否已删除；0：否；1：是"`
+type GatewayService struct {
+	ID           int64     `json:"id" gorm:"column:id"`                       // 自增id
+	LoadType     int8      `json:"load_type" gorm:"column:load_type"`         // 负载类型 0=http 1=tcp 2=grpc
+	ServiceName  string    `json:"service_name" gorm:"column:service_name"`   // 服务名称 6-128 数字字母下划线
+	ServiceDesc  string    `json:"service_desc" gorm:"column:service_desc"`   // 服务描述
+	ServiceAddr  string    `json:"service_addr" gorm:"column:service_addr"`   // 服务地址
+	TotalNode    int       `json:"total_node" gorm:"column:total_node"`       // 结点数
+	RoundType    int8      `json:"round_type" gorm:"column:round_type"`       // 轮询方式 0=random 1=round-robin 2=weight_round-robin 3=ip_hash
+	IpList       string    `json:"ip_list" gorm:"column:ip_list"`             // ip列表
+	WeightList   string    `json:"weight_list" gorm:"column:weight_list"`     //权重列表
+	WhiteIpList  string    `json:"white_ip_list" gorm:"column:white_ip_list"` // 白名单
+	BlackIpList  string    `json:"black_ip_list" gorm:"column:black_ip_list"` // 黑名单
+	RemoteParams string    `json:"remote_params" gorm:"column:remote_params"` // 远程调度的参数
+	UpdateAt     time.Time `json:"update_at" gorm:"column:update_at"`         // 更新时间
+	CreateAt     time.Time `json:"create_at" gorm:"column:create_at"`         // 新增时间
+	IsDelete     int8      `json:"is_delete" gorm:"column:is_delete"`         // 是否删除 1=删除
 }
 
-type ServiceDetail struct {
-	ID           int64     `json:"id" gorm:"primary_key"`
-	LoadType     int       `json:"load_type" gorm:"column:load_type" description:"负载类型 0=http 1=tcp 2=grpc"`
-	ServiceName  string    `json:"service_name" gorm:"column:service_name" description:"服务名称"`
-	ServiceDesc  string    `json:"service_desc" gorm:"column:service_desc" description:"服务描述"`
-	ServiceAddr  string    `json:"service_addr" gorm:"column:service_addr" description:"服务地址"`
-	TotalNode    int       `json:"total_node" gorm:"column:total_node" description:"结点数"`
-	RoundType    int8      `json:"round_type" gorm:"column:round_type" description:"轮询方式"`
-	IpList       string    `json:"ip_list" gorm:"column:ip_list" description:"ip列表"`
-	WeightList   string    `json:"weight_list" gorm:"column:weight_list" description:"权重列表"`
-	WhiteIpList  string    `json:"white_ip_list" gorm:"column:white_ip_list" description:"白名单ip列表"`
-	BlackIpList  string    `json:"black_ip_list" gorm:"column:black_ip_list" description:"黑名单ip列表"`
-	RemoteParams string    `json:"remote_params" gorm:"column:remote_params" description:"业务参数"`
-	UpdatedAt    time.Time `json:"create_at" gorm:"column:create_at" description:"更新时间"`
-	CreatedAt    time.Time `json:"update_at" gorm:"column:update_at" description:"添加时间"`
-	IsDelete     int8      `json:"is_delete" gorm:"column:is_delete" description:"是否已删除；0：否；1：是"`
-}
-
-func (t *ServiceInfo) TableName() string {
+func (m *GatewayService) TableName() string {
 	return "gateway_service"
 }
 
-func (t *ServiceDetail) TableName() string {
-	return "gateway_service"
-}
-
-func (t *ServiceInfo) PageList(tx *gorm.DB, param *dto.ServiceListInput) ([]ServiceInfo, int64, error) {
+func ServicePageList(keyword string, size, page int) ([]GatewayService, int64, error) {
+	var list []GatewayService
 	total := int64(0)
-	var list []ServiceInfo
-	offset := (param.PageNo - 1) * param.PageSize
+	offset := (page - 1) * size
 
-	query := tx.Table(t.TableName()).
+	query := DB.Select([]string{"id", "load_type", "service_name", "service_desc", "service_addr", "total_node"}).
 		Where("is_delete = 0")
-	if param.Info != "" {
+	if keyword != "" {
 		query = query.Where("(service_name like ? or service_desc like ?)",
-			"%"+param.Info+"%", "%"+param.Info+"%")
+			"%"+keyword+"%", "%"+keyword+"%")
 	}
-	if err := query.Limit(param.PageSize).Offset(offset).Order("id desc").Find(&list).Error; err != nil && err != gorm.ErrRecordNotFound {
+	if err := query.Limit(size).Offset(offset).Order("id desc").Find(&list).Error; err != nil && err != gorm.ErrRecordNotFound {
 		return nil, 0, err
 	}
-	query.Limit(param.PageSize).Offset(offset).Count(&total)
+	// TODO:能不能合起来？
+	if err := query.Limit(size).Offset(offset).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
 	return list, total, nil
 }
 
-func (t *ServiceDetail) QueryById(tx *gorm.DB, id int) (*ServiceDetail, error) {
-	detail := ServiceDetail{}
-
-	if err := tx.Table(t.TableName()).Where("id = ? and is_delete = 0", id).Find(&detail).Error; err != nil {
-		return nil, err
-	}
-
-	return &detail, nil
+func ServiceDetail(id int) (GatewayService, error) {
+	var detail GatewayService
+	result := DB.Where("id = ? and is_delete = 0", id).First(&detail)
+	return detail, result.Error
 }
