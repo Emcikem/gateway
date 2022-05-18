@@ -1,10 +1,10 @@
 package service
 
 import (
+	"gateway/dao"
+	"gateway/serializer"
+	"gateway/util"
 	"github.com/gin-gonic/gin"
-	"singo/dao"
-	"singo/serializer"
-	"singo/util"
 )
 
 // UserLoginService 管理用户登录的服务

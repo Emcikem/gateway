@@ -1,8 +1,8 @@
 package server
 
 import (
-	"singo/api"
-	"singo/middleware"
+	"gateway/api"
+	"gateway/middleware"
 
 	"github.com/gin-gonic/gin"
 )

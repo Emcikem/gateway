@@ -1,8 +1,8 @@
 package service
 
 import (
-	"singo/dao"
-	"singo/serializer"
+	"gateway/dao"
+	"gateway/serializer"
 )
 
 // UserRegisterService 管理用户注册服务

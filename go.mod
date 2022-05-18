@@ -1,10 +1,8 @@
-module singo
+module gateway
 
 go 1.16
 
 require (
-	github.com/gin-contrib/cors v1.3.1
-	github.com/gin-contrib/sessions v0.0.3
 	github.com/gin-gonic/gin v1.7.1
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect

@@ -1,9 +1,9 @@
 package service
 
 import (
+	"gateway/dao"
+	"gateway/serializer"
 	"github.com/gin-gonic/gin"
-	"singo/dao"
-	"singo/serializer"
 )
 
 // RemoteListService 列表页查询接口

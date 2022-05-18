@@ -1,6 +1,6 @@
 package serializer
 
-import "singo/dao"
+import "gateway/dao"
 
 // User 用户序列化器
 type User struct {

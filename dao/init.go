@@ -1,9 +1,9 @@
 package dao
 
 import (
+	"gateway/util"
 	"log"
 	"os"
-	"singo/util"
 	"time"
 
 	"gorm.io/driver/mysql"

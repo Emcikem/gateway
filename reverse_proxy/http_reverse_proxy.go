@@ -2,11 +2,11 @@ package load_balance
 
 import (
 	"fmt"
+	"gateway/reverse_proxy/load_balance"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"singo/reverse_proxy/load_balance"
 	"strings"
 )
 

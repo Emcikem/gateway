@@ -1,10 +1,10 @@
 package conf
 
 import (
+	"gateway/cache"
+	"gateway/dao"
+	"gateway/util"
 	"os"
-	"singo/cache"
-	"singo/dao"
-	"singo/util"
 
 	"github.com/joho/godotenv"
 )

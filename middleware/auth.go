@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"singo/dao"
-	"singo/serializer"
-	"singo/util"
+	"gateway/dao"
+	"gateway/serializer"
+	"gateway/util"
 
 	"github.com/gin-gonic/gin"
 )
