@@ -1,20 +1,18 @@
-package load_balance
+package reverse_proxy
 
 import (
 	"fmt"
 	"gateway/reverse_proxy/load_balance"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"strings"
 )
 
-func NewLoadBalanceReverseProxy(c *gin.Context, lb load_balance.LoadBalance, trans *http.Transport) *httputil.ReverseProxy {
+func NewLoadBalanceReverseProxy(lb load_balance.LoadBalance) *httputil.ReverseProxy {
 	//请求协调者
 	director := func(req *http.Request) {
 		nextAddr, err := lb.Get(req.URL.String())
-
 		if err != nil || nextAddr == "" {
 			panic("get next addr fail")
 		}

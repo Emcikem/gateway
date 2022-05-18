@@ -12,10 +12,17 @@ import (
 )
 
 func main() {
-	rs1 := &RealServer{Addr: "127.0.0.1:2003"}
+	rs1 := &RealServer{Addr: "127.0.0.1:2001"}
 	rs1.Run()
-	rs2 := &RealServer{Addr: "127.0.0.1:2004"}
+
+	rs2 := &RealServer{Addr: "127.0.0.1:2002"}
 	rs2.Run()
+
+	rs3 := &RealServer{Addr: "127.0.0.1:2003"}
+	rs3.Run()
+
+	rs4 := &RealServer{Addr: "127.0.0.1:2004"}
+	rs4.Run()
 
 	//监听关闭信号
 	quit := make(chan os.Signal)
@@ -44,10 +51,6 @@ func (r *RealServer) Run() {
 }
 
 func (r *RealServer) HelloHandler(w http.ResponseWriter, req *http.Request) {
-	//127.0.0.1:8008/abc?sdsdsa=11
-	//r.Addr=127.0.0.1:8008
-	//req.URL.Path=/abc
-	//fmt.Println(req.Host)
 	upath := fmt.Sprintf("http://%s%s\n", r.Addr, req.URL.Path)
 	realIP := fmt.Sprintf("RemoteAddr=%s,X-Forwarded-For=%v,X-Real-Ip=%v\n", req.RemoteAddr, req.Header.Get("X-Forwarded-For"), req.Header.Get("X-Real-Ip"))
 	header := fmt.Sprintf("headers =%v\n", req.Header)
