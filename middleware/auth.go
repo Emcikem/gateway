@@ -15,13 +15,10 @@ func CurrentUser() gin.HandlerFunc {
 		if err != nil {
 			return
 		}
-		username, err := util.GetUsername(tokenString)
-		if err != nil {
+		if username, err := util.GetUsername(tokenString); err != nil {
 			return
-		}
-		if username != "" {
-			user, err := dao.GetUser(username)
-			if err == nil {
+		} else if username != "" {
+			if user, err := dao.GetUser(username); err == nil {
 				c.Set("user", &user)
 			}
 		}
@@ -38,7 +35,6 @@ func AuthRequired() gin.HandlerFunc {
 				return
 			}
 		}
-
 		c.JSON(200, serializer.CheckLogin())
 		c.Abort()
 	}

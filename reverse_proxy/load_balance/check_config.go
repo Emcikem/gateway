@@ -15,6 +15,7 @@ const (
 	DefaultCheckInterval  = 10 // 心跳检测的间隔时间
 )
 
+// LoadBalanceCheckConf 观察者
 type LoadBalanceCheckConf struct {
 	observers    []Observer        // 观察者集合
 	confIpWeight map[string]string // 自定义的负载均衡结点以及其权值
@@ -22,10 +23,12 @@ type LoadBalanceCheckConf struct {
 	format       string
 }
 
+// Attach 添加时间接受者
 func (s *LoadBalanceCheckConf) Attach(o Observer) {
 	s.observers = append(s.observers, o)
 }
 
+// NotifyAllObserver 手动开启观察者模式
 func (s *LoadBalanceCheckConf) NotifyAllObserver() {
 	for _, obs := range s.observers {
 		obs.Update()
@@ -89,6 +92,7 @@ func (s *LoadBalanceCheckConf) UpdateConf(conf []string) {
 	}
 }
 
+// NewLoadBalanceCheckConf 初始化
 func NewLoadBalanceCheckConf(format string, conf map[string]string) (*LoadBalanceCheckConf, error) {
 	var aList []string
 	// 默认初始化
