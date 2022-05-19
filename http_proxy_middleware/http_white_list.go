@@ -19,7 +19,10 @@ func HTTPWhiteListMiddleware() gin.HandlerFunc {
 			return
 		}
 		serviceDetail := serverInterface.(*dao.GatewayService)
-		whiteIpList := strings.Split(serviceDetail.WhiteIpList, ",")
+		var whiteIpList []string
+		if serviceDetail.WhiteIpList != "" {
+			whiteIpList = strings.Split(serviceDetail.WhiteIpList, ",")
+		}
 		if serviceDetail.OpenAuth == 1 && len(whiteIpList) > 0 {
 			if util.InStringSlice(whiteIpList, c.ClientIP()) {
 				serializer.ResponseError(c, 5001, errors.New(fmt.Sprintf("%s not in whiteIpList", c.ClientIP())))
