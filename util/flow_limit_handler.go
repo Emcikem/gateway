@@ -1,4 +1,4 @@
-package public
+package util
 
 import (
 	"golang.org/x/time/rate"

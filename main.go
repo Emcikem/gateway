@@ -2,7 +2,7 @@ package main
 
 import (
 	"gateway/conf"
-	"gateway/server"
+	"gateway/router"
 )
 
 func main() {
@@ -10,7 +10,7 @@ func main() {
 	conf.Init()
 
 	// 装载路由
-	r := server.NewRouter()
+	r := router.NewRouter()
 	r.Run(":8880")
 
 	//mConf, err := load_balance.NewLoadBalanceCheckConf(

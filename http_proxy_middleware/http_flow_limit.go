@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"gateway/dao"
-	"gateway/public"
 	"gateway/serializer"
 	"gateway/util"
 	"github.com/gin-gonic/gin"
@@ -24,7 +23,7 @@ func HTTPFlowLimitMiddleware() gin.HandlerFunc {
 		// 服务端限流
 		serverQps := float64(serviceDetail.ServerLimit)
 		if serverQps != 0 {
-			serviceLimiter, err := public.FlowLimiterHandler.GetLimiter(
+			serviceLimiter, err := util.FlowLimiterHandler.GetLimiter(
 				fmt.Sprintf("%s_%s", util.FlowServicePrefix, serviceDetail.ServiceName),
 				serverQps,
 			)
@@ -43,7 +42,7 @@ func HTTPFlowLimitMiddleware() gin.HandlerFunc {
 		// 客户端限流
 		clientQps := float64(serviceDetail.ServerLimit)
 		if clientQps != 0 {
-			clientLimiter, err := public.FlowLimiterHandler.GetLimiter(
+			clientLimiter, err := util.FlowLimiterHandler.GetLimiter(
 				fmt.Sprintf("%s_%s_%s", util.FlowServicePrefix, serviceDetail.ServiceName, c.ClientIP()),
 				clientQps,
 			)
