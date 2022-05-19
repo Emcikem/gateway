@@ -3,27 +3,15 @@ package reverse_proxy
 import (
 	"fmt"
 	"gateway/reverse_proxy/load_balance"
-	"net"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"strings"
-	"time"
 )
 
-var transport = &http.Transport{
-	DialContext: (&net.Dialer{
-		Timeout:   30 * time.Second, // 连接超时
-		KeepAlive: 30 * time.Second, // 长链接超时时间
-	}).DialContext,
-	MaxIdleConns:          100,              // 最大空闲连接
-	IdleConnTimeout:       90 * time.Second, // 空闲超时时间
-	TLSHandshakeTimeout:   10 * time.Second, // tls握手超时时间
-	ExpectContinueTimeout: 1 * time.Second,  // 100-continue超时时间
-}
-
 // NewLoadBalanceReverseProxy 传入工厂模式，代表负载均衡策略
-func NewLoadBalanceReverseProxy(lb load_balance.LoadBalance) *httputil.ReverseProxy {
+func NewLoadBalanceReverseProxy(c *gin.Context, lb load_balance.LoadBalance, trans *http.Transport) *httputil.ReverseProxy {
 	//请求协调者
 	director := func(req *http.Request) {
 		nextAddr, err := lb.Get(req.URL.String())
@@ -66,7 +54,7 @@ func NewLoadBalanceReverseProxy(lb load_balance.LoadBalance) *httputil.ReversePr
 		Director:       director,
 		ModifyResponse: modifyFunc,
 		ErrorHandler:   errFunc,
-		Transport:      transport}
+		Transport:      trans}
 }
 
 func singleJoiningSlash(a, b string) string {

@@ -2,6 +2,7 @@ package dao
 
 import (
 	"gorm.io/gorm"
+	"strings"
 	"time"
 )
 
@@ -56,4 +57,21 @@ func ServiceDetail(id int) (GatewayService, error) {
 	var detail GatewayService
 	result := DB.Where("id = ? and is_delete = 0", id).First(&detail)
 	return detail, result.Error
+}
+
+func ServiceDelete(id int) error {
+	err := DB.Where("id = ? and is_delete = 0", id).Update("is_delete", 1).Error
+	return err
+}
+
+func (m *GatewayService) SaveService() error {
+	return DB.Save(m).Error
+}
+
+func (m *GatewayService) GetIpListByModel() []string {
+	return strings.Split(m.IpList, ",")
+}
+
+func (m *GatewayService) GetWeightListByModel() []string {
+	return strings.Split(m.WeightList, ",")
 }

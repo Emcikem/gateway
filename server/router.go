@@ -17,18 +17,28 @@ func NewRouter() *gin.Engine {
 	// 路由
 	v1 := r.Group("admin")
 	{
-		v1.GET("ping", api.Ping)
-		// 用户注册
-		v1.POST("/register", api.UserRegister)
-		// 用户登录
-		v1.POST("/login", api.UserLogin)
-		// 需要登录保护的
-		auth := v1.Group("")
+		v1.POST("/register", api.UserRegister) // 用户注册
+		v1.POST("/login", api.UserLogin)       // 用户登录
+
+		auth := v1.Group("") // 需要登录保护的
 		auth.Use(middleware.AuthRequired())
 		{
-			// User Routing
-			auth.GET("/admin_info", api.UserMe)
-			auth.DELETE("/logout", api.UserLogout)
+			auth.GET("/admin_info", api.UserMe)  // 用户详情
+			auth.POST("/logout", api.UserLogout) // 退出登录
+		}
+	}
+	v2 := r.Group("service")
+	{
+		v2.GET("/detail", api.ServiceDetailQuery) // 服务详情页
+		v2.GET("/list", api.ServiceListQuery)     // 列表页查询
+		v2.POST("/save", api.ServiceDetailSave)   // 服务保存
+		v2.DELETE("/delete", api.ServiceDelete)   // 服务删除
+		v2.POST("/update", api.ServiceUpdate)     // 服务更新
+		// 需要登录保护的
+		auth := v2.Group("")
+		auth.Use(middleware.AuthRequired())
+		{
+
 		}
 	}
 	return r
