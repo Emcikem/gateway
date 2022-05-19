@@ -12,9 +12,12 @@ type GatewayService struct {
 	ServiceDesc  string    `json:"service_desc" gorm:"column:service_desc"`   // 服务描述
 	ServiceAddr  string    `json:"service_addr" gorm:"column:service_addr"`   // 服务地址
 	TotalNode    int       `json:"total_node" gorm:"column:total_node"`       // 结点数
+	OpenAuth     int8      `json:"open_auth" gorm:"open_auth"`                // 是否开启权限校验
+	ClientLimit  int       `json:"client_limit" gorm:"client_limit"`          // 客户端限流
+	ServerLimit  int       `json:"server_limit" gorm:"server_limit"`          // 服务端限流
 	RoundType    int8      `json:"round_type" gorm:"column:round_type"`       // 轮询方式 0=random 1=round-robin 2=weight_round-robin 3=ip_hash
 	IpList       string    `json:"ip_list" gorm:"column:ip_list"`             // ip列表
-	WeightList   string    `json:"weight_list" gorm:"column:weight_list"`     //权重列表
+	WeightList   string    `json:"weight_list" gorm:"column:weight_list"`     // 权重列表
 	WhiteIpList  string    `json:"white_ip_list" gorm:"column:white_ip_list"` // 白名单
 	BlackIpList  string    `json:"black_ip_list" gorm:"column:black_ip_list"` // 黑名单
 	RemoteParams string    `json:"remote_params" gorm:"column:remote_params"` // 远程调度的参数

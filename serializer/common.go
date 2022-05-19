@@ -1,6 +1,9 @@
 package serializer
 
-import "github.com/gin-gonic/gin"
+import (
+	"encoding/json"
+	"github.com/gin-gonic/gin"
+)
 
 // Response 基础序列化器
 type Response struct {
@@ -68,4 +71,12 @@ func ParamErr(msg string, err error) Response {
 		msg = "参数错误"
 	}
 	return Err(CodeParamErr, msg, err)
+}
+
+func ResponseError(c *gin.Context, code int, err error) {
+	resp := &Response{Code: code, Error: err.Error(), Data: ""}
+	c.JSON(200, resp)
+	response, _ := json.Marshal(resp)
+	c.Set("response", string(response))
+	c.AbortWithError(200, err)
 }

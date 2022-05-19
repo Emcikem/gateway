@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func HTTPWhiteListMiddleware() gin.HandlerFunc {
+func HTTPBlackListMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		serverInterface, ok := c.Get("service")
 		if !ok {
@@ -20,9 +20,10 @@ func HTTPWhiteListMiddleware() gin.HandlerFunc {
 		}
 		serviceDetail := serverInterface.(*dao.GatewayService)
 		whiteIpList := strings.Split(serviceDetail.WhiteIpList, ",")
-		if serviceDetail.OpenAuth == 1 && len(whiteIpList) > 0 {
-			if util.InStringSlice(whiteIpList, c.ClientIP()) {
-				serializer.ResponseError(c, 5001, errors.New(fmt.Sprintf("%s not in whiteIpList", c.ClientIP())))
+		blackIpList := strings.Split(serviceDetail.BlackIpList, ",")
+		if serviceDetail.OpenAuth == 1 && len(whiteIpList) == 0 && len(blackIpList) > 0 {
+			if util.InStringSlice(blackIpList, c.ClientIP()) {
+				serializer.ResponseError(c, 5001, errors.New(fmt.Sprintf("%s in blackIpList", c.ClientIP())))
 				c.Abort()
 			}
 		}

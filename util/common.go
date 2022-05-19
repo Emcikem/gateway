@@ -29,3 +29,12 @@ func GetUsername(tokenString string) (string, error) {
 	}
 	return fmt.Sprint(token.Claims.(jwt.MapClaims)["name"]), nil
 }
+
+func InStringSlice(slice []string, str string) bool {
+	for _, item := range slice {
+		if str == item {
+			return true
+		}
+	}
+	return false
+}
