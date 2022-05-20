@@ -96,7 +96,9 @@ func (lbr *LoadBalancer) GetLoadBalance(gatewayService *dao.GatewayService) (loa
 	if err != nil {
 		return nil, err
 	}
-	lb := load_balance.LoadBalanceFactoryWithConf(load_balance.LbRandom, mConf)
+	lb := load_balance.LoadBalanceFactoryWithConf(
+		load_balance.LbType(gatewayService.RoundType),
+		mConf)
 
 	// 维护单例的负载均衡池
 	lbItem := &LoadBalancerItem{
@@ -123,11 +125,11 @@ func (t *Transportor) GetTrans(gatewayService *dao.GatewayService) (*http.Transp
 	}
 	trans := &http.Transport{
 		DialContext: (&net.Dialer{
-			Timeout: time.Duration(httpRule.UpstreamConnectTimeout),
+			Timeout: time.Duration(httpRule.UpstreamConnectTimeout) * time.Second,
 		}).DialContext,
 		MaxIdleConns:          httpRule.UpstreamMaxIDle,
-		IdleConnTimeout:       time.Duration(httpRule.UpstreamIDleTimeout),
-		ResponseHeaderTimeout: time.Duration(httpRule.UpstreamHeaderTimeout),
+		IdleConnTimeout:       time.Duration(httpRule.UpstreamIDleTimeout) * time.Second,
+		ResponseHeaderTimeout: time.Duration(httpRule.UpstreamHeaderTimeout) * time.Second,
 	}
 	transItem := &TransportItem{
 		Trans:       trans,

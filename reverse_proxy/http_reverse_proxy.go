@@ -1,8 +1,8 @@
 package reverse_proxy
 
 import (
-	"fmt"
 	"gateway/reverse_proxy/load_balance"
+	"gateway/serializer"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"net/http/httputil"
@@ -48,7 +48,7 @@ func NewLoadBalanceReverseProxy(c *gin.Context, lb load_balance.LoadBalance, tra
 	//错误回调 ：关闭real_server时测试，错误回调
 	//范围：transport.RoundTrip发生的错误、以及ModifyResponse发生的错误
 	errFunc := func(w http.ResponseWriter, r *http.Request, err error) {
-		fmt.Println(err)
+		serializer.ResponseError(c, 999, err)
 	}
 	return &httputil.ReverseProxy{
 		Director:       director,
