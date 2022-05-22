@@ -6,7 +6,6 @@ import (
 	"gateway/dao"
 	"gateway/reverse_proxy/load_balance"
 	"gateway/service/model"
-	"gateway/util"
 	"net"
 	"net/http"
 	"sync"
@@ -76,10 +75,6 @@ func (lbr *LoadBalancer) GetLoadBalance(gatewayService *dao.GatewayService) (loa
 	if httpRule.NeedHttps == 1 { // 支持https
 		schema = "https"
 	}
-	prefix := ""
-	if httpRule.RuleType == util.HTTPRuleTypePrefixURL {
-		prefix = httpRule.Rule
-	}
 	ipList := gatewayService.GetIpListByModel()
 	weightList := gatewayService.GetWeightListByModel()
 
@@ -90,7 +85,7 @@ func (lbr *LoadBalancer) GetLoadBalance(gatewayService *dao.GatewayService) (loa
 
 	// 构建服务发现版负载均衡
 	mConf, err := load_balance.NewLoadBalanceCheckConf(
-		fmt.Sprintf("%s://%s%s", schema, prefix),
+		fmt.Sprintf("%s://%s", schema, "%s"),
 		ipConf,
 	)
 	if err != nil {
