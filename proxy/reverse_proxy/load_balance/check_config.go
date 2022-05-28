@@ -43,7 +43,7 @@ func (s *LoadBalanceCheckConf) GetConf() []string {
 		if !ok {
 			weight = "50" // 默认weight
 		}
-		confList = append(confList, fmt.Sprintf(s.format, ip)+weight)
+		confList = append(confList, fmt.Sprintf(s.format, ip)+" ip权重:"+weight)
 	}
 	return confList
 }

@@ -1,7 +1,7 @@
 package reverse_proxy
 
 import (
-	"gateway/reverse_proxy/load_balance"
+	"gateway/proxy/reverse_proxy/load_balance"
 	"gateway/serializer"
 	"github.com/gin-gonic/gin"
 	"net/http"

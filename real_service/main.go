@@ -1,4 +1,4 @@
-package main
+package real_service
 
 import (
 	"fmt"
@@ -11,18 +11,36 @@ import (
 	"time"
 )
 
-func main() {
-	rs1 := &RealServer{Addr: "127.0.0.1:2001"}
+func RunRealService() {
+	rs1 := &RealServer{Addr: "127.0.0.1:2000"}
 	rs1.Run()
 
-	rs2 := &RealServer{Addr: "127.0.0.1:2002"}
+	rs2 := &RealServer{Addr: "127.0.0.1:2001"}
 	rs2.Run()
 
-	rs3 := &RealServer{Addr: "127.0.0.1:2003"}
+	rs3 := &RealServer{Addr: "127.0.0.1:2002"}
 	rs3.Run()
 
-	rs4 := &RealServer{Addr: "127.0.0.1:2004"}
+	rs4 := &RealServer{Addr: "127.0.0.1:2003"}
 	rs4.Run()
+
+	rs5 := &RealServer{Addr: "127.0.0.1:2004"}
+	rs5.Run()
+
+	rs6 := &RealServer{Addr: "127.0.0.1:2005"}
+	rs6.Run()
+
+	rs7 := &RealServer{Addr: "127.0.0.1:2006"}
+	rs7.Run()
+
+	rs8 := &RealServer{Addr: "127.0.0.1:2007"}
+	rs8.Run()
+
+	rs9 := &RealServer{Addr: "127.0.0.1:2008"}
+	rs9.Run()
+
+	rs10 := &RealServer{Addr: "127.0.0.1:2009"}
+	rs10.Run()
 
 	//监听关闭信号
 	quit := make(chan os.Signal)
@@ -51,8 +69,11 @@ func (r *RealServer) Run() {
 }
 
 func (r *RealServer) HelloHandler(w http.ResponseWriter, req *http.Request) {
-	upath := fmt.Sprintf("http://%s%s\n", r.Addr, req.URL.Path)
-	realIP := fmt.Sprintf("RemoteAddr=%s,X-Forwarded-For=%v,X-Real-Ip=%v\n", req.RemoteAddr, req.Header.Get("X-Forwarded-For"), req.Header.Get("X-Real-Ip"))
+	upath := fmt.Sprintf("http://%s%s\n\n", r.Addr, req.URL.Path)
+
+	realIP := fmt.Sprintf("RemoteAddr=%s,X-Forwarded-For=%v,X-Real-Ip=%v\n\n",
+		req.RemoteAddr, req.Header.Get("X-Forwarded-For"), req.Header.Get("X-Real-Ip"))
+
 	header := fmt.Sprintf("headers =%v\n", req.Header)
 	io.WriteString(w, upath)
 	io.WriteString(w, realIP)

@@ -3,7 +3,7 @@ package http_proxy_middleware
 import (
 	"errors"
 	"gateway/dao"
-	"gateway/reverse_proxy"
+	"gateway/proxy/reverse_proxy"
 	"gateway/serializer"
 	"github.com/gin-gonic/gin"
 )

@@ -13,6 +13,7 @@ type FlowLimiter struct {
 	Locker           sync.RWMutex
 }
 
+// FlowLimiterItem rate.Limiter是基于令牌桶的，两个参数是令牌桶生成数量和桶的大小
 type FlowLimiterItem struct {
 	ServiceName string
 	Limiter     *rate.Limiter

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"gateway/dao"
-	"gateway/reverse_proxy/load_balance"
+	load_balance2 "gateway/proxy/reverse_proxy/load_balance"
 	"gateway/service/model"
 	"net"
 	"net/http"
@@ -21,7 +21,7 @@ type LoadBalancer struct {
 }
 
 type LoadBalancerItem struct {
-	LoadBalance load_balance.LoadBalance
+	LoadBalance load_balance2.LoadBalance
 	ServiceName string
 }
 
@@ -59,7 +59,7 @@ func init() {
 	TransportHandler = NewTransportor()     // 单例的transport池
 }
 
-func (lbr *LoadBalancer) GetLoadBalance(gatewayService *dao.GatewayService) (load_balance.LoadBalance, error) {
+func (lbr *LoadBalancer) GetLoadBalance(gatewayService *dao.GatewayService) (load_balance2.LoadBalance, error) {
 	for _, lbrItem := range lbr.LoadBalanceSlice {
 		if lbrItem.ServiceName == gatewayService.ServiceName {
 			return lbrItem.LoadBalance, nil
@@ -84,15 +84,15 @@ func (lbr *LoadBalancer) GetLoadBalance(gatewayService *dao.GatewayService) (loa
 	}
 
 	// 构建服务发现版负载均衡
-	mConf, err := load_balance.NewLoadBalanceCheckConf(
+	mConf, err := load_balance2.NewLoadBalanceCheckConf(
 		fmt.Sprintf("%s://%s", schema, "%s"),
 		ipConf,
 	)
 	if err != nil {
 		return nil, err
 	}
-	lb := load_balance.LoadBalanceFactoryWithConf(
-		load_balance.LbType(gatewayService.RoundType),
+	lb := load_balance2.LoadBalanceFactoryWithConf(
+		load_balance2.LbType(gatewayService.RoundType),
 		mConf)
 
 	// 维护单例的负载均衡池
